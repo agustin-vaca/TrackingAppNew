@@ -9,7 +9,6 @@ public class User implements Parcelable {
     private String user_id;
     private String username;
     private String avatar;
-
     private int trips;
 
     public User(String email, String user_id, String username, String avatar, int trips) {

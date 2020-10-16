@@ -11,8 +11,7 @@ import java.util.Date;
 public class UserLocation implements Parcelable {
 
     private GeoPoint geo_point;
-    private @ServerTimestamp
-    Date timestamp;
+    private @ServerTimestamp Date timestamp;
     private User user;
 
     public UserLocation(GeoPoint geo_point, Date timestamp, User user) {

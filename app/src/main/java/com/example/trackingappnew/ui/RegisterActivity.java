@@ -78,6 +78,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             user.setEmail(email);
                             user.setUsername(email.substring(0, email.indexOf("@")));
                             user.setUser_id(FirebaseAuth.getInstance().getUid());
+                            user.setTrips(1);
 
                             FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
                                     .build();

@@ -31,6 +31,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
@@ -83,16 +84,6 @@ public class LocationService extends Service {
 
     private void getLocation() {
 
-        if (!isLocationActivated) {
-            Log.d("locationserviceTAAAAAG", "getLocation: ");
-            mFusedLocationClient.removeLocationUpdates(mLocationCallback).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    Log.d("removeupdates", "onComplete: removed location updates with callback");
-                }
-            });
-        }
-
         // ---------------------------------- LocationRequest ------------------------------------
         // Create the location request to start receiving updates
         LocationRequest mLocationRequestHighAccuracy = new LocationRequest();
@@ -123,6 +114,9 @@ public class LocationService extends Service {
                             UserLocation userLocation = new UserLocation(geoPoint, null, user);
                             saveUserLocation(userLocation);
                         }
+                        else{
+                            Log.d(TAG, "onLocationResult: not entering loop");
+                        }
 
                     }
                 },
@@ -145,6 +139,20 @@ public class LocationService extends Service {
                         Log.d(TAG, "onComplete: \ninserted user location into database." +
                                 "\n latitude: " + userLocation.getGeo_point().getLatitude() +
                                 "\n longitude: " + userLocation.getGeo_point().getLongitude());
+                    }
+                }
+            });
+
+            DocumentReference routesUIDRef = FirebaseFirestore.getInstance().collection("User Routes")
+                    .document(FirebaseAuth.getInstance().getUid());
+
+            CollectionReference routeRef = routesUIDRef.collection("Route " + userLocation.getUser().getTrips());
+
+            routeRef.add(userLocation).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentReference> task) {
+                    if (task.isSuccessful()){
+                        Log.d(TAG, "onComplete: you fucking made it ");
                     }
                 }
             });

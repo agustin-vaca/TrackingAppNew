@@ -23,6 +23,7 @@ import com.example.trackingappnew.adapters.UserRecyclerAdapter;
 import com.example.trackingappnew.models.ClusterMarker;
 import com.example.trackingappnew.models.User;
 import com.example.trackingappnew.models.UserLocation;
+import com.example.trackingappnew.models.UserRoutes;
 import com.example.trackingappnew.util.MyClusterManagerRenderer;
 import com.example.trackingappnew.util.ViewWeightAnimationWrapper;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -62,11 +63,13 @@ public class UserListFragment extends Fragment implements
     //vars
     private ArrayList<User> mUserList = new ArrayList<>();
     private ArrayList<UserLocation> mUserLocations = new ArrayList<>();
+    private UserRoutes mUserRoutes =
+            new UserRoutes();
     private UserRecyclerAdapter mUserRecyclerAdapter;
     private GoogleMap mGoogleMap;
     private LatLngBounds mMapBoundary;
     private UserLocation mUserPosition;
-    private ClusterManager mClusterManager;
+    private ClusterManager<ClusterMarker> mClusterManager;
     private MyClusterManagerRenderer mClusterManagerRenderer;
     private ArrayList<ClusterMarker> mClusterMarkers = new ArrayList<>();
     private static final int LOCATION_UPDATE_INTERVAL = 1000;
@@ -86,6 +89,7 @@ public class UserListFragment extends Fragment implements
         if (getArguments() != null) {
             mUserList = getArguments().getParcelableArrayList(getString(R.string.intent_user_list));
             mUserLocations = getArguments().getParcelableArrayList(getString(R.string.intent_user_locations));
+//            mUserRoutes = (UserRoutes) getArguments().getSerializable("intent_user_routes");
         }
     }
 
@@ -125,7 +129,7 @@ public class UserListFragment extends Fragment implements
     }
 
     private void retrieveUserLocations(){
-        Log.d(TAG, "retrieveUserLocations: retrieving location of all users in the chatroom.");
+        Log.d(TAG, "retrieveUserLocations: retrieving location of all users.");
 
         try{
             for(final ClusterMarker clusterMarker: mClusterMarkers){

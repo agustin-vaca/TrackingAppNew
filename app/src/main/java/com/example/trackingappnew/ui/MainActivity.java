@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,6 +30,7 @@ import com.example.trackingappnew.R;
 import com.example.trackingappnew.UserClient;
 import com.example.trackingappnew.models.User;
 import com.example.trackingappnew.models.UserLocation;
+import com.example.trackingappnew.models.UserRoutes;
 import com.example.trackingappnew.services.LocationService;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -63,13 +65,16 @@ public class MainActivity extends AppCompatActivity {
 
     //vars
     private ListenerRegistration mUserListEventListener;
+    private ListenerRegistration mRouteUserLocationEventListener;
     private FirebaseFirestore mDb;
     private ArrayList<User> mUserList = new ArrayList<>();
-    private UserListFragment mUserListFragment;
     private Boolean mLocationPermissionGranted = false;
     private FusedLocationProviderClient mFusedLocationClient;
     private UserLocation mUserLocation;
     private ArrayList<UserLocation> mUserLocations = new ArrayList<>();
+    private ArrayList<UserLocation> mUserRoute = new ArrayList<>();
+    private UserRoutes mUserRoutes =
+            new UserRoutes();
 
 
     @Override
@@ -97,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
         if (!isLocationServiceRunning()) {
             Log.d(TAG, "startLocationService: called");
             Intent serviceIntent = new Intent(this, LocationService.class);
-//        this.startService(serviceIntent);
 
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
 
@@ -210,9 +214,15 @@ public class MainActivity extends AppCompatActivity {
                                 User user = doc.toObject(User.class);
                                 mUserList.add(user);
                                 getUserLocation(user);
+                                if(user.getTrips() > 0){
+                                    for (int i=1; i<=user.getTrips(); i++){
+                                        getUserRoutes(user,i);
+                                        mUserRoutes.add(mUserRoute);
+                                    }
+                                }
                             }
 
-                            Log.d(TAG, "onEvent: user list size: " + mUserList.size());
+                            Log.d(TAG, "onEvent: user list size: getUsers()" + mUserList.size());
                         }
                     }
                 });
@@ -234,6 +244,38 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void getUserRoutes(User user, int i) {
+        DocumentReference routesUIDRef = mDb.collection("User Routes")
+                .document(user.getUser_id());
+
+        CollectionReference routeRef = routesUIDRef.collection("Route " + i);
+
+        mRouteUserLocationEventListener = routeRef
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.e(TAG, "onEvent: Listen failed.", e);
+                            return;
+                        }
+
+                        if (queryDocumentSnapshots != null) {
+
+                            // Clear the list and add all the users again
+                            mUserRoute.clear();
+                            mUserRoute = new ArrayList<>();
+
+                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                                UserLocation userLocation = doc.toObject(UserLocation.class);
+                                mUserRoute.add(userLocation);
+                            }
+
+//                            Log.d(TAG, "onEvent: user list size: " + mUserList.size());
+                        }
+                    }
+                });
+    }
+
 
     private void inflateUserListFragment() {
         hideSoftKeyboard();
@@ -242,6 +284,7 @@ public class MainActivity extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(getString(R.string.intent_user_list), mUserList);
         bundle.putParcelableArrayList(getString(R.string.intent_user_locations), mUserLocations);
+//        bundle.putSerializable("intent_user_routes", mUserRoutes);
         fragment.setArguments(bundle);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -286,6 +329,9 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         if (mUserListEventListener != null) {
             mUserListEventListener.remove();
+        }
+        if (mRouteUserLocationEventListener != null) {
+            mRouteUserLocationEventListener.remove();
         }
     }
 
