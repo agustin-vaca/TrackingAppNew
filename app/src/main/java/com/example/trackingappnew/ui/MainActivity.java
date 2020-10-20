@@ -30,7 +30,6 @@ import com.example.trackingappnew.R;
 import com.example.trackingappnew.UserClient;
 import com.example.trackingappnew.models.User;
 import com.example.trackingappnew.models.UserLocation;
-import com.example.trackingappnew.models.UserRoutes;
 import com.example.trackingappnew.services.LocationService;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -73,8 +72,6 @@ public class MainActivity extends AppCompatActivity {
     private UserLocation mUserLocation;
     private ArrayList<UserLocation> mUserLocations = new ArrayList<>();
     private ArrayList<UserLocation> mUserRoute = new ArrayList<>();
-    private UserRoutes mUserRoutes =
-            new UserRoutes();
 
 
     @Override
@@ -214,12 +211,6 @@ public class MainActivity extends AppCompatActivity {
                                 User user = doc.toObject(User.class);
                                 mUserList.add(user);
                                 getUserLocation(user);
-                                if(user.getTrips() > 0){
-                                    for (int i=1; i<=user.getTrips(); i++){
-                                        getUserRoutes(user,i);
-                                        mUserRoutes.add(mUserRoute);
-                                    }
-                                }
                             }
 
                             Log.d(TAG, "onEvent: user list size: getUsers()" + mUserList.size());
@@ -284,7 +275,6 @@ public class MainActivity extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(getString(R.string.intent_user_list), mUserList);
         bundle.putParcelableArrayList(getString(R.string.intent_user_locations), mUserLocations);
-//        bundle.putSerializable("intent_user_routes", mUserRoutes);
         fragment.setArguments(bundle);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

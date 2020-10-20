@@ -15,7 +15,7 @@ import com.example.trackingappnew.util.RecyclerClickListener;
 
 import java.util.ArrayList;
 
-public class UserRecyclerAdapter extends RecyclerView.Adapter<UserRecyclerAdapter.ViewHolder>{
+public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdapter.ViewHolder>{
 
     private RecyclerClickListener listener;
 
@@ -30,10 +30,10 @@ public class UserRecyclerAdapter extends RecyclerView.Adapter<UserRecyclerAdapte
         LayoutInflater inflater = LayoutInflater.from(context);
 
         // Inflate the custom layout
-        View userView = inflater.inflate(R.layout.layout_user_list_item, parent, false);
+        View routeView = inflater.inflate(R.layout.layout_route_list_item, parent, false);
 
         // Return a new holder instance
-        ViewHolder viewHolder = new ViewHolder(userView);
+        ViewHolder viewHolder = new ViewHolder(routeView);
         return viewHolder;
     }
 
@@ -86,25 +86,7 @@ public class UserRecyclerAdapter extends RecyclerView.Adapter<UserRecyclerAdapte
     private ArrayList<User> mUsers;
 
     // Pass in the contact array into the constructor
-    public UserRecyclerAdapter(ArrayList<User> users) {
-        mUsers = users;
-    }
+//    public UserRecyclerAdapter(ArrayList<User> users) {
+//        mUsers = users;
+//    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

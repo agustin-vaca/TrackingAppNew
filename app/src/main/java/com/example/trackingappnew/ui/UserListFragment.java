@@ -2,6 +2,8 @@ package com.example.trackingappnew.ui;
 
 import android.Manifest;
 import android.animation.ObjectAnimator;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,12 +11,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.RelativeLayout;
+import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,8 +30,8 @@ import com.example.trackingappnew.adapters.UserRecyclerAdapter;
 import com.example.trackingappnew.models.ClusterMarker;
 import com.example.trackingappnew.models.User;
 import com.example.trackingappnew.models.UserLocation;
-import com.example.trackingappnew.models.UserRoutes;
 import com.example.trackingappnew.util.MyClusterManagerRenderer;
+import com.example.trackingappnew.util.RecyclerClickListener;
 import com.example.trackingappnew.util.ViewWeightAnimationWrapper;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -35,6 +42,8 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -47,7 +56,8 @@ import static com.example.trackingappnew.Constants.MAPVIEW_BUNDLE_KEY;
 
 public class UserListFragment extends Fragment implements
         OnMapReadyCallback,
-        View.OnClickListener
+        View.OnClickListener,
+        RecyclerClickListener
 {
 
     private static final String TAG = "UserListFragment";
@@ -63,8 +73,6 @@ public class UserListFragment extends Fragment implements
     //vars
     private ArrayList<User> mUserList = new ArrayList<>();
     private ArrayList<UserLocation> mUserLocations = new ArrayList<>();
-    private UserRoutes mUserRoutes =
-            new UserRoutes();
     private UserRecyclerAdapter mUserRecyclerAdapter;
     private GoogleMap mGoogleMap;
     private LatLngBounds mMapBoundary;
@@ -76,6 +84,8 @@ public class UserListFragment extends Fragment implements
     private Runnable mRunnable;
     private Handler mHandler = new Handler();
     private int mMapLayoutState = 0;
+    public Long  startDateLong;
+    public Long endDateLong;
 
 
 
@@ -89,7 +99,6 @@ public class UserListFragment extends Fragment implements
         if (getArguments() != null) {
             mUserList = getArguments().getParcelableArrayList(getString(R.string.intent_user_list));
             mUserLocations = getArguments().getParcelableArrayList(getString(R.string.intent_user_locations));
-//            mUserRoutes = (UserRoutes) getArguments().getSerializable("intent_user_routes");
         }
     }
 
@@ -102,8 +111,6 @@ public class UserListFragment extends Fragment implements
         mMapContainer = view.findViewById(R.id.map_container);
 
         view.findViewById(R.id.btn_full_screen_map).setOnClickListener(this);
-
-        initUserListRecyclerView();
 
         initGoogleMap(savedInstanceState);
 
@@ -266,8 +273,54 @@ public class UserListFragment extends Fragment implements
     }
 
 
-    private void initUserListRecyclerView() {
+    @Override
+    public void onRecyclerClick(User user) {
+
+        datePicker(user);
+
+    }
+
+
+    private void datePicker(final User user){
+       MaterialDatePicker.Builder<Pair<Long, Long>> builder = MaterialDatePicker.Builder.dateRangePicker();
+       final MaterialDatePicker<Pair<Long, Long>> materialDatePicker = builder.build();
+       materialDatePicker.show(getFragmentManager(), "Date Picker");
+
+       materialDatePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Pair<Long, Long>>() {
+           @Override
+           public void onPositiveButtonClick(Pair<Long, Long> selection) {
+               startDateLong = selection.first;
+               endDateLong = selection.second;
+
+
+
+
+
+               RouteFragment fragment = RouteFragment.newInstance();
+               Bundle bundle = new Bundle();
+               bundle.putParcelable("intent_user", user);
+               bundle.putParcelableArrayList(getString(R.string.intent_user_list), mUserList);
+               bundle.putLong("intent_startLong", startDateLong);
+               bundle.putLong("intent_endLong", endDateLong);
+               fragment.setArguments(bundle);
+
+               assert getFragmentManager() != null;
+               FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+               fragmentTransaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up);
+               fragmentTransaction.replace(((ViewGroup)(getView().getParent())).getId(), fragment, "Route List");
+               fragmentTransaction.addToBackStack("Route List");
+               fragmentTransaction.commit();
+
+           }
+       });
+
+    }
+
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         mUserRecyclerAdapter = new UserRecyclerAdapter(mUserList);
+        mUserRecyclerAdapter.setListener(this);
         mUserListRecyclerView.setAdapter(mUserRecyclerAdapter);
         mUserListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
@@ -339,7 +392,7 @@ public class UserListFragment extends Fragment implements
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.btn_full_screen_map:{
+            case R.id.btn_full_screen_map: {
 
                 if(mMapLayoutState == MAP_LAYOUT_STATE_CONTRACTED){
                     mMapLayoutState = MAP_LAYOUT_STATE_EXPANDED;
@@ -372,6 +425,7 @@ public class UserListFragment extends Fragment implements
 
         recyclerAnimation.start();
         mapAnimation.start();
+        Log.d(TAG, "expandMapAnimation: ");
     }
 
     private void contractMapAnimation(){
