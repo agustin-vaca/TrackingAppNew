@@ -11,15 +11,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.trackingappnew.R;
 import com.example.trackingappnew.models.User;
-import com.example.trackingappnew.util.RecyclerClickListener;
+import com.example.trackingappnew.util.UserRecyclerClickListener;
 
 import java.util.ArrayList;
 
 public class UserRecyclerAdapter extends RecyclerView.Adapter<UserRecyclerAdapter.ViewHolder>{
 
-    private RecyclerClickListener listener;
+    private UserRecyclerClickListener listener;
 
-    public void setListener(RecyclerClickListener listener) {
+    public void setListener(UserRecyclerClickListener listener) {
         this.listener = listener;
     }
 

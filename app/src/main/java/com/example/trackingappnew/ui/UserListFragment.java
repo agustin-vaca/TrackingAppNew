@@ -2,8 +2,6 @@ package com.example.trackingappnew.ui;
 
 import android.Manifest;
 import android.animation.ObjectAnimator;
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,16 +9,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
 import android.widget.RelativeLayout;
-import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,7 +26,7 @@ import com.example.trackingappnew.models.ClusterMarker;
 import com.example.trackingappnew.models.User;
 import com.example.trackingappnew.models.UserLocation;
 import com.example.trackingappnew.util.MyClusterManagerRenderer;
-import com.example.trackingappnew.util.RecyclerClickListener;
+import com.example.trackingappnew.util.UserRecyclerClickListener;
 import com.example.trackingappnew.util.ViewWeightAnimationWrapper;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -57,7 +52,7 @@ import static com.example.trackingappnew.Constants.MAPVIEW_BUNDLE_KEY;
 public class UserListFragment extends Fragment implements
         OnMapReadyCallback,
         View.OnClickListener,
-        RecyclerClickListener
+        UserRecyclerClickListener
 {
 
     private static final String TAG = "UserListFragment";

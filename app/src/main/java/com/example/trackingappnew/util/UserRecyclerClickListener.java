@@ -2,6 +2,6 @@ package com.example.trackingappnew.util;
 
 import com.example.trackingappnew.models.User;
 
-public interface RecyclerClickListener {
+public interface UserRecyclerClickListener {
     void onRecyclerClick(User user);
 }

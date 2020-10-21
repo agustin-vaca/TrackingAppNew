@@ -10,16 +10,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.trackingappnew.R;
-import com.example.trackingappnew.models.User;
-import com.example.trackingappnew.util.RecyclerClickListener;
+import com.example.trackingappnew.models.UserRoute;
+import com.example.trackingappnew.util.RouteRecyclerClickListener;
+import com.example.trackingappnew.util.UserRecyclerClickListener;
 
 import java.util.ArrayList;
 
 public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdapter.ViewHolder>{
 
-    private RecyclerClickListener listener;
+    private RouteRecyclerClickListener listener;
 
-    public void setListener(RecyclerClickListener listener) {
+    public void setListener(RouteRecyclerClickListener listener) {
         this.listener = listener;
     }
 
@@ -40,26 +41,28 @@ public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdap
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         // Get the data model based on position
-        final User user = mUsers.get(position);
+        final UserRoute route = mUserRoutes.get(position);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (listener != null){
-                    listener.onRecyclerClick(user);
+                    listener.onRouteRecyclerClick(route);
                 }
             }
         });
 
         // Set item views based on your views and data model
         TextView username = holder.nameTextView;
-        username.setText(user.getUsername());
-        TextView email = holder.emailTextView;
-        email.setText(user.getEmail());
+        username.setText(route.getUserName());
+        TextView start = holder.startTextView;
+        start.setText(route.getStartTime().toString());
+        TextView end = holder.endTextView;
+        end.setText(route.getEndTime().toString());
     }
 
     @Override
     public int getItemCount() {
-        return mUsers.size();
+        return mUserRoutes.size();
     }
 
     // Provide a direct reference to each of the views within a data item
@@ -68,7 +71,8 @@ public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdap
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
         public TextView nameTextView;
-        public TextView emailTextView;
+        public TextView startTextView;
+        public TextView endTextView;
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
@@ -77,16 +81,17 @@ public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdap
             // to access the context from any ViewHolder instance.
             super(itemView);
 
-            nameTextView = (TextView) itemView.findViewById(R.id.username);
-            emailTextView = (TextView) itemView.findViewById(R.id.email);
+            nameTextView = (TextView) itemView.findViewById(R.id.user_name);
+            startTextView = (TextView) itemView.findViewById(R.id.start_date);
+            endTextView = (TextView) itemView.findViewById(R.id.end_date);
         }
     }
 
     // Store a member variable for the contacts
-    private ArrayList<User> mUsers;
+    private ArrayList<UserRoute> mUserRoutes;
 
     // Pass in the contact array into the constructor
-//    public UserRecyclerAdapter(ArrayList<User> users) {
-//        mUsers = users;
-//    }
+    public RouteRecyclerAdapter(ArrayList<UserRoute> routes) {
+        mUserRoutes = routes;
+    }
 }
