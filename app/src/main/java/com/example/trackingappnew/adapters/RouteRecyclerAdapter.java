@@ -56,8 +56,6 @@ public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdap
         username.setText(route.getUserName());
         TextView start = holder.startTextView;
         start.setText(route.getStartTime().toString());
-        TextView end = holder.endTextView;
-        end.setText(route.getEndTime().toString());
     }
 
     @Override
@@ -72,7 +70,6 @@ public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdap
         // for any view that will be set as you render a row
         public TextView nameTextView;
         public TextView startTextView;
-        public TextView endTextView;
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
@@ -83,7 +80,6 @@ public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdap
 
             nameTextView = (TextView) itemView.findViewById(R.id.user_name);
             startTextView = (TextView) itemView.findViewById(R.id.start_date);
-            endTextView = (TextView) itemView.findViewById(R.id.end_date);
         }
     }
 
@@ -94,4 +90,5 @@ public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdap
     public RouteRecyclerAdapter(ArrayList<UserRoute> routes) {
         mUserRoutes = routes;
     }
+
 }

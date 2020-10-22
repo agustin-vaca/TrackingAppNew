@@ -13,13 +13,11 @@ public class UserRoute implements Parcelable{
 
     private String userName;
     private Date startTime;
-    private Date endTime;
     private ArrayList<GeoPoint> tripCoordinates;
 
     public UserRoute(String userName, Date startTime, Date endTime, ArrayList<GeoPoint> tripCoordinates) {
         this.userName = userName;
         this.startTime = startTime;
-        this.endTime = endTime;
         this.tripCoordinates = tripCoordinates;
     }
 
@@ -56,14 +54,6 @@ public class UserRoute implements Parcelable{
 
     public void setStartTime(Date startTime) {
         this.startTime = startTime;
-    }
-
-    public Date getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
     }
 
     public ArrayList<GeoPoint> getTripCoordinates() {
