@@ -119,6 +119,7 @@ public class RouteFragment extends Fragment {
                             Query query = mDb.collection("User Routes").document(user_id).collection("Route "+ k)
                                     .orderBy("timestamp", Query.Direction.ASCENDING)
                                     .limit(1);
+                            int finalK = k;
                             query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -137,11 +138,11 @@ public class RouteFragment extends Fragment {
                                                 }
                                                 //Write userName
                                                 mUserRoute.setUserName(routeObjects.get(i).getUser().getUsername());
-                                                Log.d("Username", "onComplete: "+ mUserRoute.getUserName());
                                                 //Write startTime
                                                 mUserRoute.setStartTime(new Date(firebaseStartDate));
+                                                Log.d("starttime", "onComplete: "+ mUserRoute.getStartTime());
                                                 //Write tripCoordinates
-                                                Query queryCoord = mDb.collection("User Routes").document(user_id).collection("Route "+ i)
+                                                Query queryCoord = mDb.collection("User Routes").document(user_id).collection("Route "+ finalK)
                                                         .orderBy("timestamp", Query.Direction.ASCENDING);
                                                 queryCoord.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                                     @Override
@@ -152,7 +153,7 @@ public class RouteFragment extends Fragment {
                                                                 userCoordinates.add(coordinateObjects.get(i).getGeo_point());
                                                             }
                                                             mUserRoute.setTripCoordinates(userCoordinates);
-                                                            Log.d("mUserRoutes", "onComplete: "+ mUserRoute.getUserName());
+                                                            Log.d("mUserRoute", "rightbefore"+mUserRoute.getStartTime());
                                                             mUserRoutes.add(mUserRoute);
                                                             if (mUserRoutes.size() == numOfTrips){
                                                                 for (UserRoute route : mUserRoutes){
