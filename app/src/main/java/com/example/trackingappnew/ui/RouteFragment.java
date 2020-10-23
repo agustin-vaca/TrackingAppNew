@@ -1,17 +1,17 @@
 package com.example.trackingappnew.ui;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.trackingappnew.R;
 import com.example.trackingappnew.adapters.RouteRecyclerAdapter;
@@ -32,10 +32,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 
-public class RouteFragment extends Fragment {
+public class RouteFragment extends Fragment implements
+        RouteRecyclerClickListener {
 
     //Widgets
     private RecyclerView mRouteRecyclerView;
@@ -48,8 +48,8 @@ public class RouteFragment extends Fragment {
     private Long startDate;
     private Long endDate;
     private UserRoute mUserRoute;
-    private ArrayList<UserRoute> mUserRoutes = new ArrayList<>();
-    private ArrayList<GeoPoint> userCoordinates = new ArrayList<>();
+    private final ArrayList<UserRoute> mUserRoutes = new ArrayList<>();
+    private final ArrayList<GeoPoint> userCoordinates = new ArrayList<>();
     public int numOfTrips;
     private String user_id;
     private List<UserLocation> routeObjects;
@@ -87,6 +87,7 @@ public class RouteFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_route, container, false);
         mRouteRecyclerView = view.findViewById(R.id.route_list_recycler_view);
         mRouteRecyclerAdapter = new RouteRecyclerAdapter(mUserRoutes);
+        mRouteRecyclerAdapter.setListener(this);
         mRouteRecyclerView.setAdapter(mRouteRecyclerAdapter);
         mRouteRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -111,15 +112,14 @@ public class RouteFragment extends Fragment {
                 if (task.isSuccessful()){
                     if (task.getResult().toObject(User.class) != null){
                         numOfTrips = task.getResult().toObject(User.class).getTrips();
+                        final int[] counter = {0};
                         Log.d("Route Fragment", "onCreateView: numofTrips before"+numOfTrips);
 
                         // Check each trip if it matches time constraint
                         for (int k = 1; k <= numOfTrips; k++){
                             Log.d("TimeConstraint", "onComplete: ");
-                            Query query = mDb.collection("User Routes").document(user_id).collection("Route "+ k)
-                                    .orderBy("timestamp", Query.Direction.ASCENDING)
-                                    .limit(1);
-                            int finalK = k;
+                            Query query = mDb.collection("User Routes").document(user_id).collection("Route " + k)
+                                    .orderBy("timestamp", Query.Direction.ASCENDING);
                             query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -128,43 +128,36 @@ public class RouteFragment extends Fragment {
                                         // Get list of UserLocation objects of size 1
                                         routeObjects = task.getResult().toObjects(UserLocation.class);
                                         Log.d("Route Fragment", "onComplete: "+routeObjects.size());
-                                        for (int i = 0; i<routeObjects.size(); i++){
+                                        if (routeObjects.size() > 0) {
                                             firebaseStartDate = routeObjects.get(0).getTimestamp().getTime();
-                                            Log.d("routeObject", "onComplete: "+routeObjects.get(0));
+                                            Log.d("routeObject", "onComplete: " + routeObjects.get(0));
                                             //If Route date is in between constraints, build UserRoute Object
-                                            if (firebaseStartDate >= startDate && firebaseStartDate <= endDate ){
-                                                if (mUserRoute == null){
-                                                    mUserRoute = new UserRoute();
-                                                }
+                                            if (firebaseStartDate >= startDate && firebaseStartDate <= endDate) {
+                                                counter[0]++;
+                                                mUserRoute = new UserRoute();
                                                 //Write userName
-                                                mUserRoute.setUserName(routeObjects.get(i).getUser().getUsername());
+                                                mUserRoute.setUserName(routeObjects.get(0).getUser().getUsername());
                                                 //Write startTime
                                                 mUserRoute.setStartTime(new Date(firebaseStartDate));
-                                                Log.d("starttime", "onComplete: "+ mUserRoute.getStartTime());
+                                                Log.d("starttime", "onComplete: " + mUserRoute.getStartTime());
                                                 //Write tripCoordinates
-                                                Query queryCoord = mDb.collection("User Routes").document(user_id).collection("Route "+ finalK)
-                                                        .orderBy("timestamp", Query.Direction.ASCENDING);
-                                                queryCoord.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                        if (task.isSuccessful()){
-                                                            coordinateObjects = task.getResult().toObjects(UserLocation.class);
-                                                            for (int i = 0; i<coordinateObjects.size(); i++){
-                                                                userCoordinates.add(coordinateObjects.get(i).getGeo_point());
-                                                            }
-                                                            mUserRoute.setTripCoordinates(userCoordinates);
-                                                            Log.d("mUserRoute", "rightbefore"+mUserRoute.getStartTime());
-                                                            mUserRoutes.add(mUserRoute);
-                                                            if (mUserRoutes.size() == numOfTrips){
-                                                                for (UserRoute route : mUserRoutes){
-                                                                    Log.d("UserRoutes", "onComplete: mUserRoutes = "+mUserRoutes.size());
-                                                                    Log.d("User Routes", ""+route.getUserName() + " "+ route.getStartTime());
-                                                                }
-                                                                populateRecyclerView(mUserRoutes);
-                                                            }
-                                                        }
+                                                for (UserLocation object : routeObjects) {
+                                                    userCoordinates.add(object.getGeo_point());
+                                                }
+                                                mUserRoute.setTripCoordinates(userCoordinates);
+                                                Log.d("mUserRoute", "rightbefore" + mUserRoute.getStartTime());
+                                                mUserRoutes.add(mUserRoute);
+                                                Log.d("mUserRoute", "rightAfter" + mUserRoutes.size());
+                                                if (mUserRoutes.size() == numOfTrips) {
+                                                    for (UserRoute route : mUserRoutes) {
+                                                        Log.d("UserRoutes", "onComplete: mUserRoutes = " + mUserRoutes.size());
+                                                        Log.d("User Routes", "" + route.getUserName() + " " + route.getStartTime());
                                                     }
-                                                });
+
+                                                }
+                                            }
+                                            if (counter[0] == mUserRoutes.size()) {
+                                                populateRecyclerView();
                                             }
                                         }
                                     }
@@ -178,9 +171,26 @@ public class RouteFragment extends Fragment {
         });
     }
 
-    private void populateRecyclerView(ArrayList<UserRoute> userRoutes){
-        mRouteRecyclerAdapter.notifyItemRangeInserted(0, mUserRoutes.size());
+    private void populateRecyclerView() {
+        mRouteRecyclerAdapter.notifyDataSetChanged();
     }
 
 
+    @Override
+    public void onRouteRecyclerClick(UserRoute route) {
+        sendPolyline(route);
+    }
+
+    private void sendPolyline(UserRoute route) {
+        PolylineFragment fragment = PolylineFragment.newInstance();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("intent_route", route);
+        fragment.setArguments(bundle);
+
+        assert getFragmentManager() != null;
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.replace(((ViewGroup) (getView().getParent())).getId(), fragment, "Poly");
+        fragmentTransaction.commit();
+
+    }
 }

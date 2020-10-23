@@ -74,10 +74,10 @@ public class UserListFragment extends Fragment implements
     private UserLocation mUserPosition;
     private ClusterManager<ClusterMarker> mClusterManager;
     private MyClusterManagerRenderer mClusterManagerRenderer;
-    private ArrayList<ClusterMarker> mClusterMarkers = new ArrayList<>();
+    private final ArrayList<ClusterMarker> mClusterMarkers = new ArrayList<>();
     private static final int LOCATION_UPDATE_INTERVAL = 1000;
     private Runnable mRunnable;
-    private Handler mHandler = new Handler();
+    private final Handler mHandler = new Handler();
     private int mMapLayoutState = 0;
     public Long  startDateLong;
     public Long endDateLong;
@@ -294,7 +294,6 @@ public class UserListFragment extends Fragment implements
                RouteFragment fragment = RouteFragment.newInstance();
                Bundle bundle = new Bundle();
                bundle.putParcelable("intent_user", user);
-               bundle.putParcelableArrayList(getString(R.string.intent_user_list), mUserList);
                bundle.putLong("intent_startLong", startDateLong);
                bundle.putLong("intent_endLong", endDateLong);
                fragment.setArguments(bundle);
