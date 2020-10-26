@@ -23,36 +23,35 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.firestore.GeoPoint;
 
+import java.util.ArrayList;
+
 public class PolylineFragment extends Fragment {
 
     private UserRoute mUserRoute;
     private LatLngBounds mMapBoundary;
+    private ArrayList<LatLng> debugList = new ArrayList<>();
+    private Polyline line;
     private final OnMapReadyCallback callback = new OnMapReadyCallback() {
 
-        /**
-         * Manipulates the map once available.
-         * This callback is triggered when the map is ready to be used.
-         * This is where we can add markers or lines, add listeners or move the camera.
-         * In this case, we just add a marker near Sydney, Australia.
-         * If Google Play services is not installed on the device, the user will be prompted to
-         * install it inside the SupportMapFragment. This method will only be triggered once the
-         * user has installed Google Play services and returned to the app.
-         */
+
         @Override
         public void onMapReady(GoogleMap googleMap) {
             PolylineOptions options = new PolylineOptions();
+            LatLng pastCoord = new LatLng(0, 0);
             for (GeoPoint point : mUserRoute.getTripCoordinates()) {
                 LatLng coord = new LatLng(point.getLatitude(), point.getLongitude());
-                LatLng pastCoord = new LatLng(0, 0);
-                if (coord == pastCoord) {
-                    break;
+                if (coord.latitude == pastCoord.latitude && coord.longitude == pastCoord.longitude) {
+                    continue;
                 }
                 Log.d("onMapReady Poly", "onMapReady: " + point.getLatitude() + "  " + point.getLongitude());
                 options.add(coord);
+                debugList.add(coord);
                 pastCoord = coord;
             }
             options.width(5).color(Color.RED);
-            Polyline line = googleMap.addPolyline(options);
+            googleMap.clear();
+            line = googleMap.addPolyline(options);
+            Log.d("Polyline Fragment", "LIST: " + debugList);
 
             double bottomBoundary = mUserRoute.getTripCoordinates().get(0).getLatitude() - .01;
             double leftBoundary = mUserRoute.getTripCoordinates().get(0).getLongitude() - .01;
@@ -81,6 +80,7 @@ public class PolylineFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mUserRoute = getArguments().getParcelable("intent_route");
+            Log.d("PolyLine", "onCreate: "+mUserRoute.getTripCoordinates());
         }
     }
 
@@ -102,8 +102,9 @@ public class PolylineFragment extends Fragment {
         }
     }
 
-    private void setCameraView() {
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
 
     }
 }

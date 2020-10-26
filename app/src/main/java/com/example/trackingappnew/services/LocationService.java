@@ -43,8 +43,8 @@ public class LocationService extends Service {
     private static final String TAG = "LocationService";
 
     public static FusedLocationProviderClient mFusedLocationClient;
-    private final static long UPDATE_INTERVAL = 2 * 1000;  /* 2 secs */
-    private final static long FASTEST_INTERVAL = 1000; /* 2 sec */
+    private final static long UPDATE_INTERVAL = 3 * 1000;  /* 3 secs */
+    private final static long FASTEST_INTERVAL = 2000; /* 2 sec */
     public static LocationCallback mLocationCallback;
 
     @Nullable
@@ -139,23 +139,24 @@ public class LocationService extends Service {
                         Log.d(TAG, "onComplete: \ninserted user location into database." +
                                 "\n latitude: " + userLocation.getGeo_point().getLatitude() +
                                 "\n longitude: " + userLocation.getGeo_point().getLongitude());
+
+                        DocumentReference routesUIDRef = FirebaseFirestore.getInstance().collection("User Routes")
+                                .document(FirebaseAuth.getInstance().getUid());
+
+                        CollectionReference routeRef = routesUIDRef.collection("Route " + userLocation.getUser().getTrips());
+
+                        routeRef.add(userLocation).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentReference> task) {
+                                if (task.isSuccessful()){
+                                    Log.d(TAG, "onComplete: you fucking made it ");
+                                }
+                            }
+                        });
                     }
                 }
             });
 
-            DocumentReference routesUIDRef = FirebaseFirestore.getInstance().collection("User Routes")
-                    .document(FirebaseAuth.getInstance().getUid());
-
-            CollectionReference routeRef = routesUIDRef.collection("Route " + userLocation.getUser().getTrips());
-
-            routeRef.add(userLocation).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentReference> task) {
-                    if (task.isSuccessful()){
-                        Log.d(TAG, "onComplete: you fucking made it ");
-                    }
-                }
-            });
         } catch (NullPointerException e) {
             Log.e(TAG, "saveUserLocation: User instance is null, stopping location service.");
             Log.e(TAG, "saveUserLocation: NullPointerException: " + e.getMessage());
