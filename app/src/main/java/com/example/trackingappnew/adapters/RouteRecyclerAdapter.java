@@ -1,6 +1,7 @@
 package com.example.trackingappnew.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,11 +43,13 @@ public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdap
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         // Get the data model based on position
         final UserRoute route = mUserRoutes.get(position);
+        Log.d("Recycler", "Position: "+position);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (listener != null){
                     listener.onRouteRecyclerClick(route);
+                    Log.d("Recycler", ""+route.getTripCoordinates());
                 }
             }
         });

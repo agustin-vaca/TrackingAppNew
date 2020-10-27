@@ -49,7 +49,7 @@ public class RouteFragment extends Fragment implements
     private Long endDate;
     private UserRoute mUserRoute;
     private final ArrayList<UserRoute> mUserRoutes = new ArrayList<>();
-    private final ArrayList<GeoPoint> userCoordinates = new ArrayList<>();
+    private ArrayList<GeoPoint> userCoordinates;
     public int numOfTrips;
     private String user_id;
     private List<UserLocation> routeObjects;
@@ -135,6 +135,7 @@ public class RouteFragment extends Fragment implements
                                             if (firebaseStartDate >= startDate && firebaseStartDate <= endDate) {
                                                 counter[0]++;
                                                 mUserRoute = new UserRoute();
+                                                userCoordinates = new ArrayList<>();
                                                 //Write userName
                                                 mUserRoute.setUserName(routeObjects.get(0).getUser().getUsername());
                                                 //Write startTime

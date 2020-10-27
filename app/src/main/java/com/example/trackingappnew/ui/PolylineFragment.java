@@ -81,6 +81,8 @@ public class PolylineFragment extends Fragment {
         if (getArguments() != null) {
             mUserRoute = getArguments().getParcelable("intent_route");
             Log.d("PolyLine", "onCreate: "+mUserRoute.getTripCoordinates());
+            Log.d("PolyLine", "onCreate: "+mUserRoute.getStartTime());
+
         }
     }
 
