@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.trackingappnew.R;
 import com.example.trackingappnew.UserClient;
@@ -21,10 +22,15 @@ import static com.example.trackingappnew.Constants.isLocationActivated;
 
 public class ActivateActivity extends AppCompatActivity {
 
+    androidx.appcompat.widget.Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_activate);
+
+        toolbar = (Toolbar) findViewById(R.id.custom_toolbar);
+        setSupportActionBar(toolbar);
 
         final Button activateButton = (Button) findViewById(R.id.button);
         activateButton.setOnClickListener(new View.OnClickListener() {

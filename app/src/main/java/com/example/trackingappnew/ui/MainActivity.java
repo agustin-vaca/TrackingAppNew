@@ -22,6 +22,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentTransaction;
@@ -61,6 +62,8 @@ import static com.example.trackingappnew.Constants.isLocationActivated;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    androidx.appcompat.widget.Toolbar toolbar;
+
 
     //vars
     private ListenerRegistration mUserListEventListener;
@@ -79,6 +82,9 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: called");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        toolbar = (Toolbar) findViewById(R.id.custom_toolbar);
+        setSupportActionBar(toolbar);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -279,7 +285,7 @@ public class MainActivity extends AppCompatActivity {
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up);
-        transaction.replace(R.id.main_relative, fragment, getString(R.string.fragment_user_list));
+        transaction.replace(R.id.user_list_container, fragment, getString(R.string.fragment_user_list));
         transaction.addToBackStack(getString(R.string.fragment_user_list));
         transaction.commit();
     }

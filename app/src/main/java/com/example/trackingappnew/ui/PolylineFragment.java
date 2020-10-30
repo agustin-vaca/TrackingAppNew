@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.example.trackingappnew.R;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 
 public class PolylineFragment extends Fragment {
 
+    androidx.appcompat.widget.Toolbar toolbar;
     private UserRoute mUserRoute;
     private LatLngBounds mMapBoundary;
     private ArrayList<LatLng> debugList = new ArrayList<>();
@@ -64,6 +66,7 @@ public class PolylineFragment extends Fragment {
             );
 
             googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
+
         }
     };
 
@@ -92,6 +95,7 @@ public class PolylineFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_polyline, container, false);
+
     }
 
     @Override
@@ -107,6 +111,5 @@ public class PolylineFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-
     }
 }

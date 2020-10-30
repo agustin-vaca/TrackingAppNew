@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/main_relative"
     android:background="@color/White">
 
+    <include layout="@layout/custom_toolbar"
+        android:id="@+id/custom_toolbar"/>
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/custom_toolbar"
         android:id="@+id/user_list_container">
 
         <Button
@@ -16,8 +21,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginTop="64dp"
+            android:background="@drawable/rounded_button"
             android:text="Ver Usuarios Registrados"
-            android:clickable="true" />
+            android:textColor="@color/White" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_trackinglogo_nonstop" />
+
 
     </FrameLayout>
 

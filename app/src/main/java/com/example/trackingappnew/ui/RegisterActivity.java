@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.trackingappnew.R;
 import com.example.trackingappnew.models.User;
@@ -30,6 +31,8 @@ import static com.example.trackingappnew.util.Check.doStringsMatch;
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener
 {
     private static final String TAG = "RegisterActivity";
+    androidx.appcompat.widget.Toolbar toolbar;
+
 
     //widgets
     private EditText mEmail, mPassword, mConfirmPassword;
@@ -43,6 +46,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        toolbar = (Toolbar) findViewById(R.id.custom_toolbar);
+        setSupportActionBar(toolbar);
         mEmail = (EditText) findViewById(R.id.input_email);
         mPassword = (EditText) findViewById(R.id.input_password);
         mConfirmPassword = (EditText) findViewById(R.id.input_confirm_password);
