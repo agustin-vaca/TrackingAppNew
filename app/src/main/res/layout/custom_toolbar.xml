@@ -4,13 +4,6 @@
     android:layout_height="?attr/actionBarSize"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/custom_toolbar"
-    android:background="@drawable/ic_toolbar_nonstop"
+    android:background="@drawable/ic_toolbar_nonstop2"
     app:popupTheme="@style/AppTheme">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="28sp"
-        android:textStyle="bold"/>
-
 </androidx.appcompat.widget.Toolbar>

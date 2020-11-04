@@ -45,6 +45,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.maps.android.clustering.ClusterManager;
 
+import java.sql.ResultSet;
 import java.util.ArrayList;
 
 import static com.example.trackingappnew.Constants.MAPVIEW_BUNDLE_KEY;
@@ -234,6 +235,10 @@ public class UserListFragment extends Fragment implements
     private void setCameraView(){
 
         double bottomBoundary = mUserPosition.getGeo_point().getLatitude() - .01;
+        Double ob = bottomBoundary;
+        if (ob == null){
+            return;
+        }
         double leftBoundary = mUserPosition.getGeo_point().getLongitude() - .01;
         double topBoundary = mUserPosition.getGeo_point().getLatitude() + .01;
         double rightBoundary = mUserPosition.getGeo_point().getLongitude() + .01;
@@ -301,8 +306,8 @@ public class UserListFragment extends Fragment implements
                assert getFragmentManager() != null;
                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                fragmentTransaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up);
-               fragmentTransaction.replace(((ViewGroup)(getView().getParent())).getId(), fragment, "Route List");
-               fragmentTransaction.addToBackStack("Route List");
+               fragmentTransaction.replace(R.id.user_list_container, fragment, "Route List");
+               fragmentTransaction.addToBackStack(null);
                fragmentTransaction.commit();
 
            }

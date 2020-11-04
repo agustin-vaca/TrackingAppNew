@@ -25,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.trackingappnew.R;
@@ -67,14 +68,12 @@ public class MainActivity extends AppCompatActivity {
 
     //vars
     private ListenerRegistration mUserListEventListener;
-    private ListenerRegistration mRouteUserLocationEventListener;
     private FirebaseFirestore mDb;
-    private ArrayList<User> mUserList = new ArrayList<>();
+    public static ArrayList<User> mUserList = new ArrayList<>();
     private Boolean mLocationPermissionGranted = false;
     private FusedLocationProviderClient mFusedLocationClient;
     private UserLocation mUserLocation;
-    private ArrayList<UserLocation> mUserLocations = new ArrayList<>();
-    private ArrayList<UserLocation> mUserRoute = new ArrayList<>();
+    public static ArrayList<UserLocation> mUserLocations = new ArrayList<>();
 
 
     @Override
@@ -92,13 +91,12 @@ public class MainActivity extends AppCompatActivity {
 
         getUsers();
 
-        Button userButton = (Button) findViewById(R.id.users_button);
-        userButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                inflateUserListFragment();
-            }
-        });
+        Fragment start = new StartFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.add(R.id.user_list_container, start, "Start");
+        transaction.addToBackStack(null);
+        transaction.commit();
+
     }
 
     private void startLocationService() {
@@ -241,54 +239,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void getUserRoutes(User user, int i) {
-        DocumentReference routesUIDRef = mDb.collection("User Routes")
-                .document(user.getUser_id());
 
-        CollectionReference routeRef = routesUIDRef.collection("Route " + i);
-
-        mRouteUserLocationEventListener = routeRef
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
-                        if (e != null) {
-                            Log.e(TAG, "onEvent: Listen failed.", e);
-                            return;
-                        }
-
-                        if (queryDocumentSnapshots != null) {
-
-                            // Clear the list and add all the users again
-                            mUserRoute.clear();
-                            mUserRoute = new ArrayList<>();
-
-                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                                UserLocation userLocation = doc.toObject(UserLocation.class);
-                                mUserRoute.add(userLocation);
-                            }
-
-//                            Log.d(TAG, "onEvent: user list size: " + mUserList.size());
-                        }
-                    }
-                });
-    }
-
-
-    private void inflateUserListFragment() {
-        hideSoftKeyboard();
-
-        UserListFragment fragment = UserListFragment.newInstance();
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(getString(R.string.intent_user_list), mUserList);
-        bundle.putParcelableArrayList(getString(R.string.intent_user_locations), mUserLocations);
-        fragment.setArguments(bundle);
-
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up);
-        transaction.replace(R.id.user_list_container, fragment, getString(R.string.fragment_user_list));
-        transaction.addToBackStack(getString(R.string.fragment_user_list));
-        transaction.commit();
-    }
 
     private void hideSoftKeyboard() {
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -325,9 +276,6 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         if (mUserListEventListener != null) {
             mUserListEventListener.remove();
-        }
-        if (mRouteUserLocationEventListener != null) {
-            mRouteUserLocationEventListener.remove();
         }
     }
 

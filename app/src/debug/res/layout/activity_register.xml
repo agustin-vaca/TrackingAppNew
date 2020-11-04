@@ -2,6 +2,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/White"
     >
 
     <ScrollView
@@ -35,6 +36,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="30dp"
                     android:inputType="textEmailAddress"
+                    android:textColor="@color/Black"
+                    android:textColorHint="@color/DarkGrey"
                     android:hint="@string/prompt_email"
                     android:layout_below="@+id/textEmailReg"/>
 
@@ -45,6 +48,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:inputType="textPassword"
+                    android:textColor="@color/Black"
+                    android:textColorHint="@color/DarkGrey"
                     android:hint="@string/password"
                     android:layout_below="@+id/input_email"/>
 
@@ -54,6 +59,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:inputType="textPassword"
+                    android:textColor="@color/Black"
+                    android:textColorHint="@color/DarkGrey"
                     android:hint="@string/confirm_password"
                     android:layout_below="@+id/input_password"/>
 

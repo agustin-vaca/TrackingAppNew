@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/White"
     >
 
     <ScrollView
@@ -24,6 +25,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:hint="@string/prompt_email"
+                android:textColor="@color/Black"
+                android:textColorHint="@color/DarkGrey"
                 android:inputType="textEmailAddress"
                 android:maxLines="1"/>
 
@@ -33,6 +36,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/password"
+                android:textColor="@color/Black"
+                android:textColorHint="@color/DarkGrey"
                 android:layout_marginTop="20dp"
                 android:inputType="textPassword"
                 android:maxLines="1"
@@ -44,7 +49,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
-                android:text="@string/sign_in"
+                android:text="Iniciar sesion"
                 android:textStyle="bold"
                 android:background="@drawable/theme_button"/>
 
@@ -58,7 +63,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:text="@string/register"
+                    android:text="Registrarse"
                     android:gravity="center"
                     android:textSize="16sp"
                     android:textColor="@color/linkBlue"

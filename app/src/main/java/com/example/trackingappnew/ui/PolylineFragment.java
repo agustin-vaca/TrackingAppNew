@@ -20,6 +20,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.firestore.GeoPoint;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 public class PolylineFragment extends Fragment {
 
     androidx.appcompat.widget.Toolbar toolbar;
+
     private UserRoute mUserRoute;
     private LatLngBounds mMapBoundary;
     private ArrayList<LatLng> debugList = new ArrayList<>();
@@ -40,7 +42,16 @@ public class PolylineFragment extends Fragment {
         public void onMapReady(GoogleMap googleMap) {
             PolylineOptions options = new PolylineOptions();
             LatLng pastCoord = new LatLng(0, 0);
+
+
+            double bottomBoundary = mUserRoute.getTripCoordinates().get(0).getLatitude();
+            double leftBoundary = mUserRoute.getTripCoordinates().get(0).getLongitude();
+            double topBoundary = mUserRoute.getTripCoordinates().get(0).getLatitude();
+            double rightBoundary = mUserRoute.getTripCoordinates().get(0).getLongitude();
+
+            //Calculate points for polyline
             for (GeoPoint point : mUserRoute.getTripCoordinates()) {
+                //Calculate coord
                 LatLng coord = new LatLng(point.getLatitude(), point.getLongitude());
                 if (coord.latitude == pastCoord.latitude && coord.longitude == pastCoord.longitude) {
                     continue;
@@ -49,16 +60,39 @@ public class PolylineFragment extends Fragment {
                 options.add(coord);
                 debugList.add(coord);
                 pastCoord = coord;
+
+                //Calculate boundaries
+                if (coord.latitude < bottomBoundary){
+                    bottomBoundary = coord.latitude;
+                }
+                if (coord.longitude < leftBoundary){
+                    leftBoundary = coord.longitude;
+                }
+                if (coord.latitude > topBoundary){
+                    topBoundary = coord.latitude;
+                }
+                if (coord.longitude > rightBoundary){
+                    rightBoundary = coord.longitude;
+                }
             }
+
+            //Set start end markers
+            GeoPoint starts = mUserRoute.getTripCoordinates().get(0);
+            GeoPoint ends = mUserRoute.getTripCoordinates().get(mUserRoute.getTripCoordinates().size()-1);
+
+
+            LatLng start = new LatLng(starts.getLatitude(), starts.getLongitude());
+            LatLng end = new LatLng(ends.getLatitude(), ends.getLongitude());
+
             options.width(5).color(Color.RED);
             googleMap.clear();
             line = googleMap.addPolyline(options);
             Log.d("Polyline Fragment", "LIST: " + debugList);
 
-            double bottomBoundary = mUserRoute.getTripCoordinates().get(0).getLatitude() - .01;
-            double leftBoundary = mUserRoute.getTripCoordinates().get(0).getLongitude() - .01;
-            double topBoundary = mUserRoute.getTripCoordinates().get(0).getLatitude() + .01;
-            double rightBoundary = mUserRoute.getTripCoordinates().get(0).getLongitude() + .01;
+            bottomBoundary = bottomBoundary - .005;
+            leftBoundary = leftBoundary - .005;
+            topBoundary = topBoundary + .005;
+            rightBoundary = rightBoundary + .005;
 
             mMapBoundary = new LatLngBounds(
                     new LatLng(bottomBoundary, leftBoundary),
@@ -66,6 +100,14 @@ public class PolylineFragment extends Fragment {
             );
 
             googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
+
+            googleMap.addMarker(new MarkerOptions()
+                    .position(start)
+                    .title("Inicio"));
+
+            googleMap.addMarker(new MarkerOptions()
+                    .position(end)
+                    .title("Final"));
 
         }
     };

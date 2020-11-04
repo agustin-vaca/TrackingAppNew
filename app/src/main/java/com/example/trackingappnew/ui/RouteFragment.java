@@ -30,6 +30,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -42,7 +43,6 @@ public class RouteFragment extends Fragment implements
 
     //vars
     private RouteRecyclerAdapter mRouteRecyclerAdapter;
-    private ListenerRegistration mRouteEventListener;
     private FirebaseFirestore mDb;
     private User user;
     private Long startDate;
@@ -53,10 +53,7 @@ public class RouteFragment extends Fragment implements
     public int numOfTrips;
     private String user_id;
     private List<UserLocation> routeObjects;
-    private List<UserLocation> endDateObjects;
-    private List<UserLocation> coordinateObjects;
     private Long firebaseStartDate;
-    private Long firebaseEndDate;
 
 
 
@@ -158,6 +155,7 @@ public class RouteFragment extends Fragment implements
                                                 }
                                             }
                                             if (counter[0] == mUserRoutes.size()) {
+                                                Collections.sort(mUserRoutes);
                                                 populateRecyclerView();
                                             }
                                         }
@@ -190,7 +188,8 @@ public class RouteFragment extends Fragment implements
 
         assert getFragmentManager() != null;
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.replace(((ViewGroup) (getView().getParent())).getId(), fragment, "Poly");
+        fragmentTransaction.replace(R.id.user_list_container, fragment, "Poly");
+        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
 
     }

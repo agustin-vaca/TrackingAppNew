@@ -4,9 +4,15 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorSecondary">@color/colorSecondary</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="backgroundColor">@color/White</item>
+        <item name="colorOnBackground">@color/Black</item>
+        <item name="colorSurface">@color/White</item>
+        <item name="colorOnSurface">@color/Black</item>
+        <item name="android:textColorSecondary">@color/Black</item>
     </style>
 
 </resources>

@@ -96,7 +96,6 @@ public class LocationService extends Service {
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Log.d(TAG, "getLocation: stopping the location service.");
-            stopSelf();
             return;
         }
         Log.d(TAG, "getLocation: getting location information.");
@@ -160,7 +159,6 @@ public class LocationService extends Service {
         } catch (NullPointerException e) {
             Log.e(TAG, "saveUserLocation: User instance is null, stopping location service.");
             Log.e(TAG, "saveUserLocation: NullPointerException: " + e.getMessage());
-            stopSelf();
         }
 
     }

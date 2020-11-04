@@ -18,11 +18,13 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import static com.example.trackingappnew.Constants.ACTIVATE;
 import static com.example.trackingappnew.Constants.isLocationActivated;
 
 public class ActivateActivity extends AppCompatActivity {
 
     androidx.appcompat.widget.Toolbar toolbar;
+    Button activateButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +34,8 @@ public class ActivateActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.custom_toolbar);
         setSupportActionBar(toolbar);
 
-        final Button activateButton = (Button) findViewById(R.id.button);
+        activateButton = (Button) findViewById(R.id.button);
+        activateButton.setText(ACTIVATE);
         activateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -47,6 +50,7 @@ public class ActivateActivity extends AppCompatActivity {
             isLocationActivated = true;
             Intent intent = new Intent(ActivateActivity.this, MainActivity.class);
             startActivity(intent);
+            ACTIVATE = "Desactivar";
         }
         else {
             Log.d("Button Boolean", "activateButton: true to false");
@@ -56,6 +60,7 @@ public class ActivateActivity extends AppCompatActivity {
             stopService(serviceIntent);
             Intent intent = new Intent(ActivateActivity.this, MainActivity.class);
             startActivity(intent);
+            ACTIVATE = "Activar";
         }
     }
 

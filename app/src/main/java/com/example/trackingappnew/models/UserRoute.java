@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class UserRoute implements Parcelable{
+public class UserRoute implements Parcelable, Comparable<UserRoute>{
 
     private String userName;
     private Date startTime;
@@ -72,5 +72,10 @@ public class UserRoute implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(userName);
+    }
+
+    @Override
+    public int compareTo(UserRoute o) {
+        return getStartTime().compareTo(o.getStartTime());
     }
 }
