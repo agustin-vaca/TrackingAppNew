@@ -1,5 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/White"
@@ -28,20 +28,21 @@
                 android:textColor="@color/Black"
                 android:textColorHint="@color/DarkGrey"
                 android:inputType="textEmailAddress"
-                android:maxLines="1"/>
+                android:maxLines="1"
+                android:autofillHints="Email" />
 
 
             <EditText
                 android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/password"
+                android:hint="@string/contrase_a"
                 android:textColor="@color/Black"
                 android:textColorHint="@color/DarkGrey"
                 android:layout_marginTop="20dp"
                 android:inputType="textPassword"
                 android:maxLines="1"
-                />
+                android:autofillHints="@string/contrase_a" />
 
             <Button
                 android:id="@+id/email_sign_in_button"
@@ -49,7 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
-                android:text="Iniciar sesion"
+                android:text="@string/iniciar_sesion"
                 android:textStyle="bold"
                 android:background="@drawable/theme_button"/>
 
@@ -63,7 +64,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:text="Registrarse"
+                    android:text="@string/registrarse"
                     android:gravity="center"
                     android:textSize="16sp"
                     android:textColor="@color/linkBlue"

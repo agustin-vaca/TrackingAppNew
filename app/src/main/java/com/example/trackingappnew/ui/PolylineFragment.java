@@ -20,6 +20,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -101,13 +102,25 @@ public class PolylineFragment extends Fragment {
 
             googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
 
-            googleMap.addMarker(new MarkerOptions()
-                    .position(start)
-                    .title("Inicio"));
+            if (options.getPoints().size() > 1){
+                Marker inicio = googleMap.addMarker(new MarkerOptions()
+                        .position(start)
+                        .title("Inicio"));
+                inicio.showInfoWindow();
 
-            googleMap.addMarker(new MarkerOptions()
-                    .position(end)
-                    .title("Final"));
+                Marker finall = googleMap.addMarker(new MarkerOptions()
+                        .position(end)
+                        .title("Final"));
+                finall.showInfoWindow();
+            }
+            else {
+                Marker info = googleMap.addMarker(
+                        new MarkerOptions()
+                        .position(options.getPoints().get(0))
+                        .title("No se puede dibujar una linea (ruta de solo un punto)")
+                );
+                info.showInfoWindow();
+            }
 
         }
     };
