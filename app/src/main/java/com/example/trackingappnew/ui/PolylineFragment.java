@@ -85,7 +85,7 @@ public class PolylineFragment extends Fragment {
             LatLng start = new LatLng(starts.getLatitude(), starts.getLongitude());
             LatLng end = new LatLng(ends.getLatitude(), ends.getLongitude());
 
-            options.width(5).color(Color.RED);
+            options.width(6).color(Color.RED);
             googleMap.clear();
             line = googleMap.addPolyline(options);
             Log.d("Polyline Fragment", "LIST: " + debugList);
